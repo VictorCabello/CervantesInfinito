@@ -50,3 +50,18 @@ def downloaded_quijote():
     if is_there_quijote():
         return
     request.urlretrieve(QUIJOTE_URL, quijote_path)
+
+
+def get_quijote():
+    """
+    Returns an string that represents
+    all the words on the quijote books
+
+    :param int numCharacters: The number of chararcters
+    to be readed
+    """
+    downloaded_quijote();
+
+    with open(quijote_path, 'r', encoding='utf-8') as f:
+        text = f.read()
+        return text
