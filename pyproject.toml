@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=64", "setuptools_scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[project]
+requires-python = ">=3.8"
+dynamic = ["version", "dependencies", "optional-dependencies"]
+name = "cervantesinfinito"
+description = "A custom gpt to generate text like cervantes"
+readme = "README.md"
+authors = [{ "name" = "Victor Cabello", "email" = "vmeca87@gmail.com" }]
+license = { text = "MIT" }
+classifiers = [
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "Intended Audience :: System Administrators",
+  "License :: OSI Approved :: BSD License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+  "Programming Language :: Python",
+]
+keywords = ["gpt" ]
+
+[tool.setuptools_scm]
+version_file = "cervantesinfinito/_version.py"
+
+
+[tool.setuptools.dynamic]
+dependencies = { file = ["requirements.in"] }
+optional-dependencies.test = { file = ["requirements-test.txt"] }
