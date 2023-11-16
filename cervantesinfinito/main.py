@@ -13,7 +13,9 @@ def main():
     """
     text = get_quijote()
     universe = get_char_universe(text)
-    print(universe)
+    encoded = universe.encode('hi there')
+    print(encoded)
+    print(universe.decode(encoded))
 
 if __name__ == '__main__':
     main()

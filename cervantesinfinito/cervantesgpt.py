@@ -16,11 +16,44 @@ class CharacterUniverse:
         a list of all the unique characters that occurs on the text
     vocab_size : int
         total number of the unique characters that occurs on the text
+    str_to_int : Map
+        used to encode str to int
+    int_to_str : Map
+        used to decode str to int
     '''
     def __init__(self, text) -> None:
         chars = sorted(list(set(text)))
         self.chars = chars
         self.vocab_size = len(chars)
+        self.str_to_int = {}
+        self.int_to_str = {}
+        self.initTranformatinUtils()
+
+    def initTranformatinUtils(self) -> None:
+        '''
+        Initilizez maps used to enumerate/decode
+        '''
+        for i, ch in enumerate(self.chars):
+            self.str_to_int[ch] = i
+            self.int_to_str[i] = ch
+
+    def encode(self, text) -> list[int]:
+        '''
+        Transform text into an array of int_to_str
+
+        Returns
+        -------
+        list[int]
+            A representation of the text as int array
+        '''
+        return [self.str_to_int[ch] for ch in text]
+
+    def decode(self, array) -> str:
+        '''
+        Transform an arry of int to str
+        '''
+        return ''.join([self.int_to_str[i] for i in array])
+        
 
     def __str__(self) -> str:
         '''
