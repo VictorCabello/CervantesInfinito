@@ -13,9 +13,7 @@ def main():
     """
     text = get_quijote()
     universe = get_char_universe(text)
-    encoded = universe.encode('hi there')
-    print(encoded)
-    print(universe.decode(encoded))
+    print(universe.tensor[:1000])
 
 if __name__ == '__main__':
     main()

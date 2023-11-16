@@ -4,6 +4,7 @@ able to generate text similar
 to want Cervantes wrote
 '''
 
+import torch
 
 class CharacterUniverse:
     '''
@@ -20,8 +21,11 @@ class CharacterUniverse:
         used to encode str to int
     int_to_str : Map
         used to decode str to int
+    text : The Cervantes full text
+        used to decode str to int
     '''
     def __init__(self, text) -> None:
+        self.text = text
         chars = sorted(list(set(text)))
         self.chars = chars
         self.vocab_size = len(chars)
@@ -53,7 +57,14 @@ class CharacterUniverse:
         Transform an arry of int to str
         '''
         return ''.join([self.int_to_str[i] for i in array])
-        
+
+    @property
+    def tensor(self):
+        '''
+        Create a tensor with the characeters of the 
+        universe.
+        '''
+        return torch.tensor(self.encode(self.text), dtype=torch.long)
 
     def __str__(self) -> str:
         '''
