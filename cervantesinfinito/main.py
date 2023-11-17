@@ -15,8 +15,9 @@ def main():
     universe = get_char_universe(text)
     inputs, targets = universe.get_batch()
     model = BiframLanguageModel(universe.vocab_size)
-    out = model(inputs, targets)
-    print(out.shape)
+    predictions, loss = model(inputs, targets)
+    print(predictions.shape)
+    print(loss)
 
 
 if __name__ == '__main__':

@@ -4,7 +4,6 @@ able to generate text similar
 to want Cervantes wrote
 '''
 
-from typing import Tuple
 import torch
 
 class CharacterUniverse:
@@ -73,13 +72,13 @@ class CharacterUniverse:
         '''
         return ''.join([self.int_to_str[i] for i in array])
 
-    def get_batch(self, isTrainData=True) -> Tuple[torch.Tensor, torch.Tensor]:
+    def get_batch(self, isTrainData=True) -> tuple[torch.Tensor, torch.Tensor]:
         '''
         Generarte a small batch of data of inputs x and targets y
 
         Returns
         -------
-        Tuple[Tensor, Tensor]
+        tuple[Tensor, Tensor]
             A tuple wich first elment is a Tensor that repersents the inputs and
             the second element is a Tensor that reperesnts the targets
         '''
@@ -160,5 +159,39 @@ class BiframLanguageModel(torch.nn.Module):
         -------
         '''
         predictions = self.token_embedding_table(inputs)
+        
+        predictions, targets = self.transform_to_friendly_cross_entropy(predictions, targets)
 
-        return predictions
+        loss = torch.nn.functional.cross_entropy(predictions, targets)
+
+        return predictions, loss
+
+
+    def transform_to_friendly_cross_entropy(self, predictions, targets):
+        '''
+        tranforms the input Tensors to be compatible with the cross_entropy
+        funciton
+
+        Parameters
+        ----------
+        predictions : Tensor (batch_size, block_size, vocab_size)
+            used to generate the predictions
+        targets : Tensor (batch_size, block_size, vocab_size)
+            used to validate the loss of the predictions
+
+        Returns
+        -------
+        tuple[Tensor, Tensor]
+            first element is a Tensor in the format that can be accepted
+            for the cross_entropy funciton as its first parameter and
+            second element is a Tensor in the format that can be accepted
+            for the cross_entropy funciton as its second parameter and
+        '''
+        batch_size, block_size, vocab_size = predictions.shape
+
+        predictions = predictions.view(
+                batch_size * block_size, vocab_size)
+
+        targets = targets.view( batch_size * block_size )
+
+        return predictions, targets
