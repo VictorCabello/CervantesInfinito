@@ -13,7 +13,7 @@ def main():
     """
     text = get_quijote()
     universe = get_char_universe(text)
-    print(universe.tensor[:1000])
+    print(universe.validation_data)
 
 if __name__ == '__main__':
     main()
