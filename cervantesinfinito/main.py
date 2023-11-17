@@ -14,15 +14,20 @@ def main():
     text = get_quijote()
     universe = get_char_universe(text)
 
-    block_size = 8
+    inputs, targets = universe.get_batch()
 
-    tranformer_input = universe.train_data[:block_size]
-    next_tarnformer_input = universe.train_data[1:block_size + 1]
+    print('Inputs:')
+    print(inputs.shape)
+    print(inputs)
+    print('Targets:')
+    print(targets.shape)
+    print(targets)
 
-    for t in range(block_size):
-        input = tranformer_input[:t+1]
-        target = next_tarnformer_input[t]
-        print(f"When the input is {input} the target: {target}")
+    for b in range(universe.batch_size):
+        for t in range(universe.block_size):
+            myInput = inputs[b,:t+1]
+            target = targets[b, t]
+            print(f"When the input is {myInput} the target: {target}")
 
 if __name__ == '__main__':
     main()

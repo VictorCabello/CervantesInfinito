@@ -4,6 +4,7 @@ able to generate text similar
 to want Cervantes wrote
 '''
 
+from typing import Tuple
 import torch
 
 class CharacterUniverse:
@@ -27,6 +28,10 @@ class CharacterUniverse:
         Tokens used to train the model
     validation_data : torch.Tensor
         Tokens used to validate the model
+    batch_size : int
+        number of indepentent sequences will we process in parallel
+    block_size : int
+        Max context length for predictions
     '''
     def __init__(self, text) -> None:
         self.text = text
@@ -40,6 +45,8 @@ class CharacterUniverse:
         tranning_data_percentage = int( 0.9 * len(self.tensor) )
         self.train_data = self.tensor[:tranning_data_percentage]
         self.validation_data =  self.tensor[tranning_data_percentage:]
+        self.batch_size = 4
+        self.block_size = 8
 
     def initTranformatinUtils(self) -> None:
         '''
@@ -65,6 +72,23 @@ class CharacterUniverse:
         Transform an arry of int to str
         '''
         return ''.join([self.int_to_str[i] for i in array])
+
+    def get_batch(self, isTrainData=True) -> Tuple[torch.Tensor, torch.Tensor]:
+        '''
+        Generarte a small batch of data of inputs x and targets y
+
+        Returns
+        -------
+        Tuple[Tensor, Tensor]
+            A tuple wich first elment is a Tensor that repersents the inputs and
+            the second element is a Tensor that reperesnts the targets
+        '''
+        data = self.train_data if isTrainData else self.validation_data
+        ix = torch.randint(len(data) - self.block_size, (self.batch_size,))
+        inputs = torch.stack([data[i:i + self.block_size] for i in ix])
+        targets = torch.stack([data[i + 1:i + self.block_size + 1] for i in ix])
+        return inputs, targets
+
 
     def __str__(self) -> str:
         '''
