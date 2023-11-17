@@ -46,7 +46,7 @@ class CharacterUniverse:
         self.train_data = self.tensor[:tranning_data_percentage]
         self.validation_data =  self.tensor[tranning_data_percentage:]
         self.batch_size = 4
-        self.block_size = 8
+        self.block_size = 32
 
     def initTranformatinUtils(self) -> None:
         '''
@@ -124,3 +124,41 @@ def get_char_universe(text) -> CharacterUniverse:
         the list of all unique characters and the total of them
     '''
     return CharacterUniverse(text)
+
+
+class BiframLanguageModel(torch.nn.Module):
+    '''
+    Represents a nerral network to predict characters
+
+    Attributes
+    ----------
+    token_embedding_table : torch.nn.Embedding
+        Matrix with all the tokens used by the model
+    '''
+
+    def __init__(self, vocab_size) -> None:
+        '''
+        Initialize this Model creating a matrix for all
+        its tokens
+        '''
+        super().__init__()
+        self.token_embedding_table = torch.nn.Embedding(vocab_size, vocab_size)
+
+    def forward(self, inputs, targets):
+        '''
+        This funciton is called every time the model is called and
+        it returns the predictions and its loss.
+
+        Parameters
+        ----------
+        input : Tensor (batch_size, block_size, vocab_size)
+            used to generate the predictions
+        targets : Tensor (batch_size, block_size, vocab_size)
+            used to validate the loss of the predictions
+
+        Returns
+        -------
+        '''
+        predictions = self.token_embedding_table(inputs)
+
+        return predictions

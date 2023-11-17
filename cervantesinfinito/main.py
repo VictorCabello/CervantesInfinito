@@ -4,7 +4,7 @@ to create GPT implementation
 using all the Quijote as dataset
 """
 from quijotedownloader import get_quijote
-from cervantesgpt import get_char_universe
+from cervantesgpt import get_char_universe, BiframLanguageModel
 
 def main():
     """
@@ -13,21 +13,11 @@ def main():
     """
     text = get_quijote()
     universe = get_char_universe(text)
-
     inputs, targets = universe.get_batch()
+    model = BiframLanguageModel(universe.vocab_size)
+    out = model(inputs, targets)
+    print(out.shape)
 
-    print('Inputs:')
-    print(inputs.shape)
-    print(inputs)
-    print('Targets:')
-    print(targets.shape)
-    print(targets)
-
-    for b in range(universe.batch_size):
-        for t in range(universe.block_size):
-            myInput = inputs[b,:t+1]
-            target = targets[b, t]
-            print(f"When the input is {myInput} the target: {target}")
 
 if __name__ == '__main__':
     main()
