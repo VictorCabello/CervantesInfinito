@@ -6,6 +6,8 @@ to want Cervantes wrote
 
 import torch
 
+torch.manual_seed(1337)
+
 class CharacterUniverse:
     '''
     A class used to reperesents all 
@@ -143,7 +145,7 @@ class BiframLanguageModel(torch.nn.Module):
         super().__init__()
         self.token_embedding_table = torch.nn.Embedding(vocab_size, vocab_size)
 
-    def forward(self, inputs, targets):
+    def forward(self, inputs, targets=None):
         '''
         This funciton is called every time the model is called and
         it returns the predictions and its loss.
@@ -159,12 +161,28 @@ class BiframLanguageModel(torch.nn.Module):
         -------
         '''
         predictions = self.token_embedding_table(inputs)
-        
-        predictions, targets = self.transform_to_friendly_cross_entropy(predictions, targets)
 
-        loss = torch.nn.functional.cross_entropy(predictions, targets)
+        if targets is not None:
+            predictions, targets = self.transform_to_friendly_cross_entropy(predictions, targets)
+            loss = torch.nn.functional.cross_entropy(predictions, targets)
+        else:
+            loss = None
 
         return predictions, loss
+
+    def generate(self, inputs, max_new_tokens):
+        '''
+        Generate a string similar to what Cervantes wrote
+        '''
+        for _ in range(max_new_tokens):
+            predictions, loss = self(inputs)
+            # focus on last time step
+            predictions = predictions[:, -1, :] # becomes (batch_size, vocab_size)
+            probabilities = torch.nn.functional.softmax(predictions, dim=-1) # (batch_size, vocab_size)
+            # sample from the distribution
+            next_inputs = torch.multinomial(probabilities, num_samples=1) # ( batch_size, 1 )
+            inputs = torch.cat((inputs, next_inputs), dim=1) # ( batch_size, block_size + 1 )
+        return inputs
 
 
     def transform_to_friendly_cross_entropy(self, predictions, targets):
