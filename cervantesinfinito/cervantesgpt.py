@@ -127,6 +127,20 @@ def get_char_universe(text) -> CharacterUniverse:
     return CharacterUniverse(text)
 
 
+def train_model(model, charactersUniverse : CharacterUniverse):
+    '''
+    Use a torch optimazer to train a model
+    '''
+    optimazer = torch.optim.AdamW(model.parameters(), lr=1e-3)
+    for _ in range(50000):
+        inputs, targets = charactersUniverse.get_batch()
+        _, loss = model(inputs, targets)
+        optimazer.zero_grad(set_to_none=True)
+        loss.backward()
+        optimazer.step()
+        print(loss.item())
+
+
 class BiframLanguageModel(torch.nn.Module):
     '''
     Represents a nerral network to predict characters

@@ -4,7 +4,7 @@ to create GPT implementation
 using all the Quijote as dataset
 """
 from quijotedownloader import get_quijote
-from cervantesgpt import get_char_universe, BiframLanguageModel
+from cervantesgpt import get_char_universe, BiframLanguageModel, train_model
 import torch 
 
 def main():
@@ -20,10 +20,13 @@ def main():
     print(predictions.shape)
     print(loss)
 
+    train_model(model, universe)
+
     empty_inputs = torch.zeros((1, 1), dtype=torch.long)
     generated_outpt = model.generate(empty_inputs, max_new_tokens=100)
     decoded_sample = universe.decode(generated_outpt[0].tolist())
     print(decoded_sample)
+
 
 
 if __name__ == '__main__':
